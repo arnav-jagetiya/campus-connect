@@ -1,0 +1,15 @@
+spring:
+  # PostgreSQL — requires local database: CREATE DATABASE campus_connect;
+  datasource:
+    url: jdbc:postgresql://localhost:5432/campus_connect
+    username: postgres
+    password: Vikir@Van@IronBlood2006
+
+  # JPA
+  jpa:
+    show-sql: true
+
+# Logging
+logging:
+  level:
+    com.arnavjagetiya.campusconnect: DEBUG
