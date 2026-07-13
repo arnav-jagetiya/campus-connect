@@ -1,0 +1,32 @@
+@import 'tailwindcss';
+
+@import './tokens/colors.css';
+@import './tokens/typography.css';
+@import './tokens/spacing.css';
+@import './tokens/radius.css';
+@import './tokens/shadows.css';
+@import './tokens/transitions.css';
+@import './tokens/z-index.css';
+
+/* Global resets and body styling */
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  transition:
+    background-color var(--transition-duration-normal)
+      var(--transition-timing-function-ease-default),
+    color var(--transition-duration-normal) var(--transition-timing-function-ease-default);
+}
+
+/* Accessibility: Support OS preferences for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

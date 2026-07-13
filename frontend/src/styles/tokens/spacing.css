@@ -1,0 +1,8 @@
+@theme {
+  /* Spacing scale extensions (Vite/Tailwind v4 native sizing) */
+  --width-container-xs: 28rem; /* 448px */
+  --width-container-sm: 40rem; /* 640px */
+  --width-container-md: 48rem; /* 768px */
+  --width-container-lg: 64rem; /* 1024px */
+  --width-container-xl: 80rem; /* 1280px */
+}

@@ -4,7 +4,28 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <title>Campus Connect</title>
+    <script>
+      (function() {
+        const STORAGE_KEY = 'campus-connect-theme';
+        const stored = localStorage.getItem(STORAGE_KEY);
+        let resolvedTheme = 'light';
+        if (stored === 'light' || stored === 'dark') {
+          resolvedTheme = stored;
+        } else {
+          const mql = window.matchMedia('(prefers-color-scheme: dark)');
+          if (mql.matches) {
+            resolvedTheme = 'dark';
+          }
+        }
+        if (resolvedTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+        document.documentElement.setAttribute('data-theme', resolvedTheme);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

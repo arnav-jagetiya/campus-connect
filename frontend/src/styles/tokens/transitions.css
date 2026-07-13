@@ -1,0 +1,10 @@
+@theme {
+  --transition-duration-fast: 100ms;
+  --transition-duration-normal: 150ms;
+  --transition-duration-moderate: 200ms;
+  --transition-duration-slow: 300ms;
+
+  --transition-timing-function-ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-timing-function-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --transition-timing-function-ease-out: cubic-bezier(0, 0, 0.2, 1);
+}
