@@ -1,3 +1,4 @@
+import { useAuth } from '@/hooks/use-auth';
 import { Sun, Moon, Sunset } from 'lucide-react';
 
 const getGreeting = () => {
@@ -17,13 +18,17 @@ const getFormattedDate = () => {
 };
 
 export const WelcomeHero = () => {
+  const { user } = useAuth();
   const { text: greeting, Icon: TimeIcon } = getGreeting();
+  const firstName = user?.fullName ? user.fullName.split(' ')[0] : 'User';
 
   return (
     <section className="space-y-1">
       <div className="flex items-center gap-3">
         <TimeIcon className="w-6 h-6 text-primary shrink-0" aria-hidden="true" />
-        <h1 className="text-h1 font-bold text-text tracking-tight">{greeting}, Arnav</h1>
+        <h1 className="text-h1 font-bold text-text tracking-tight">
+          {greeting}, {firstName}
+        </h1>
       </div>
       <p className="text-body-lg text-text-secondary pl-9">
         Here's what's happening across your campus today.

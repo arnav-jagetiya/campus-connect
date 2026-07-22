@@ -3,10 +3,12 @@ import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { Bell, Search, Sparkles, LogOut, Settings, User } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { useAuth } from '@/hooks/use-auth';
 
 export const TopNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   // Dynamically resolve breadcrumb tree from URL segment paths
   const breadcrumbs = React.useMemo(() => {
@@ -30,8 +32,18 @@ export const TopNav = () => {
     typeof window !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 
   const handleSignOut = () => {
+    logout();
     navigate('/auth/login');
   };
+
+  const userInitials = user?.fullName
+    ? user.fullName
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2)
+    : 'U';
 
   return (
     <header className="sticky top-0 z-header flex items-center justify-between h-14 px-6 bg-surface border-b border-border transition-colors duration-normal shrink-0">
@@ -120,13 +132,13 @@ export const TopNav = () => {
               aria-label="User menu"
               className="flex items-center justify-center w-9 h-9 rounded-full bg-primary/15 text-primary text-caption font-semibold cursor-pointer hover:ring-2 hover:ring-primary/20 transition-all focus:outline-hidden focus:ring-2 focus:ring-ring"
             >
-              AJ
+              {userInitials}
             </button>
           }
         >
           <div className="px-3 py-2 border-b border-border-subtle">
-            <p className="text-small font-semibold text-text">Arnav Jagetiya</p>
-            <p className="text-caption text-text-muted">arnav@university.edu</p>
+            <p className="text-small font-semibold text-text">{user?.fullName}</p>
+            <p className="text-caption text-text-muted">{user?.email}</p>
           </div>
           <DropdownMenuItem
             icon={<User className="w-4 h-4" />}

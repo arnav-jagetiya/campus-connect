@@ -25,3 +25,10 @@ spring:
 # Server
 server:
   port: 8080
+
+# Application-specific configuration
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET:}
+    access-token-expiration: 900000
+    refresh-token-expiration: 604800000

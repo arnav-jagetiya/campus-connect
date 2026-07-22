@@ -5,6 +5,8 @@ import { navigationConfig } from '@/config/navigation';
 import { Tooltip } from '@/components/ui/tooltip';
 import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
+import { useAuth } from '@/hooks/use-auth';
+
 interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
@@ -12,8 +14,10 @@ interface SidebarProps {
 
 export const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const handleSignOut = () => {
+    logout();
     navigate('/auth/login');
   };
 
@@ -120,20 +124,27 @@ export const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
               )}
             >
               <div className="w-7 h-7 rounded-full bg-primary/15 text-primary flex items-center justify-center text-caption font-semibold shrink-0">
-                AJ
+                {user?.fullName
+                  ? user.fullName
+                      .split(' ')
+                      .map((n) => n[0])
+                      .join('')
+                      .toUpperCase()
+                      .slice(0, 2)
+                  : 'U'}
               </div>
               {!isCollapsed && (
                 <div className="overflow-hidden flex-1 animate-in fade-in">
-                  <p className="text-small font-medium text-text truncate">Arnav Jagetiya</p>
-                  <p className="text-caption text-text-muted truncate">arnav@university.edu</p>
+                  <p className="text-small font-medium text-text truncate">{user?.fullName}</p>
+                  <p className="text-caption text-text-muted truncate">{user?.email}</p>
                 </div>
               )}
             </button>
           }
         >
           <div className="px-3 py-2 border-b border-border-subtle">
-            <p className="text-small font-semibold text-text">Arnav Jagetiya</p>
-            <p className="text-caption text-text-muted">arnav@university.edu</p>
+            <p className="text-small font-semibold text-text">{user?.fullName}</p>
+            <p className="text-caption text-text-muted">{user?.email}</p>
           </div>
           <DropdownMenuItem
             icon={<User className="w-4 h-4" />}

@@ -9,6 +9,11 @@ spring:
   jpa:
     show-sql: true
 
+# JWT — development secret only. Production must use APP_JWT_SECRET env var.
+app:
+  jwt:
+    secret: Y2FtcHVzLWNvbm5lY3QtZGV2LXNlY3JldC1rZXktMjU2LWJpdHMtbG9uZw==
+
 # Logging
 logging:
   level:

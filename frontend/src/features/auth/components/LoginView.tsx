@@ -4,15 +4,48 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/forms/input';
 import { PasswordInput } from '@/components/forms/password-input';
 import { AuthCard } from './AuthCard';
+import { useAuth } from '@/hooks/use-auth';
+import type { ApiErrorBody } from '@/services/auth.service';
 
 export const LoginView = () => {
-  const handleSubmit = (e: React.FormEvent) => {
+  const { login } = useAuth();
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      await login(email, password);
+    } catch (err: unknown) {
+      if (err && typeof err === 'object' && 'response' in err) {
+        const axiosError = err as { response?: { data?: ApiErrorBody } };
+        const errorBody = axiosError.response?.data;
+        setError(errorBody?.message || 'Invalid email or password. Please try again.');
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
+      setIsLoading(false);
+    }
   };
 
   return (
     <AuthCard title="Welcome back" subtitle="Sign in to your account to continue">
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Error Message Alert Banner */}
+        {error && (
+          <div
+            className="p-3 text-small text-danger bg-danger/10 border border-danger/20 rounded-md"
+            role="alert"
+          >
+            {error}
+          </div>
+        )}
+
         {/* Email address field */}
         <div className="space-y-1.5">
           <label htmlFor="login-email" className="text-small font-medium text-text">
@@ -25,6 +58,9 @@ export const LoginView = () => {
             inputSize="lg"
             required
             autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={isLoading}
           />
         </div>
 
@@ -47,12 +83,15 @@ export const LoginView = () => {
             inputSize="lg"
             required
             autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={isLoading}
           />
         </div>
 
         {/* Primary Submit Button */}
         <div className="pt-2">
-          <Button type="submit" size="lg" fullWidth>
+          <Button type="submit" size="lg" fullWidth isLoading={isLoading}>
             Sign In
           </Button>
         </div>

@@ -4,15 +4,62 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/forms/input';
 import { PasswordInput } from '@/components/forms/password-input';
 import { AuthCard } from './AuthCard';
+import { useAuth } from '@/hooks/use-auth';
+import type { ApiErrorBody, ApiFieldErrors } from '@/services/auth.service';
 
 export const RegisterView = () => {
-  const handleSubmit = (e: React.FormEvent) => {
+  const { register } = useAuth();
+  const [fullName, setFullName] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [generalError, setGeneralError] = React.useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = React.useState<ApiFieldErrors>({});
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setGeneralError(null);
+    setFieldErrors({});
+
+    if (password !== confirmPassword) {
+      setFieldErrors({ confirmPassword: 'Passwords do not match' });
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      await register(fullName, email, password);
+    } catch (err: unknown) {
+      if (err && typeof err === 'object' && 'response' in err) {
+        const axiosError = err as { response?: { data?: ApiErrorBody } };
+        const errorBody = axiosError.response?.data;
+        if (errorBody?.fieldErrors) {
+          setFieldErrors(errorBody.fieldErrors);
+        } else {
+          setGeneralError(errorBody?.message || 'An error occurred during registration.');
+        }
+      } else {
+        setGeneralError('An unexpected error occurred. Please try again.');
+      }
+      setIsLoading(false);
+    }
   };
 
   return (
     <AuthCard title="Create your account" subtitle="Join your campus community today">
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* General Error Banner */}
+        {generalError && (
+          <div
+            className="p-3 text-small text-danger bg-danger/10 border border-danger/20 rounded-md"
+            role="alert"
+          >
+            {generalError}
+          </div>
+        )}
+
         {/* Full Name field */}
         <div className="space-y-1.5">
           <label htmlFor="register-name" className="text-small font-medium text-text">
@@ -25,7 +72,16 @@ export const RegisterView = () => {
             inputSize="lg"
             required
             autoComplete="name"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            disabled={isLoading}
+            aria-invalid={!!fieldErrors.fullName}
           />
+          {fieldErrors.fullName && (
+            <p className="text-caption text-danger" role="alert">
+              {fieldErrors.fullName}
+            </p>
+          )}
         </div>
 
         {/* Email field */}
@@ -40,7 +96,16 @@ export const RegisterView = () => {
             inputSize="lg"
             required
             autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={isLoading}
+            aria-invalid={!!fieldErrors.email}
           />
+          {fieldErrors.email && (
+            <p className="text-caption text-danger" role="alert">
+              {fieldErrors.email}
+            </p>
+          )}
         </div>
 
         {/* Password field */}
@@ -54,7 +119,16 @@ export const RegisterView = () => {
             inputSize="lg"
             required
             autoComplete="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={isLoading}
+            aria-invalid={!!fieldErrors.password}
           />
+          {fieldErrors.password && (
+            <p className="text-caption text-danger" role="alert">
+              {fieldErrors.password}
+            </p>
+          )}
         </div>
 
         {/* Confirm Password field */}
@@ -68,12 +142,21 @@ export const RegisterView = () => {
             inputSize="lg"
             required
             autoComplete="new-password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            disabled={isLoading}
+            aria-invalid={!!fieldErrors.confirmPassword}
           />
+          {fieldErrors.confirmPassword && (
+            <p className="text-caption text-danger" role="alert">
+              {fieldErrors.confirmPassword}
+            </p>
+          )}
         </div>
 
         {/* Primary Submit Button */}
         <div className="pt-2">
-          <Button type="submit" size="lg" fullWidth>
+          <Button type="submit" size="lg" fullWidth isLoading={isLoading}>
             Create Account
           </Button>
         </div>

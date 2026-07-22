@@ -7,61 +7,75 @@ import { LoginView } from '@/features/auth/components/LoginView';
 import { RegisterView } from '@/features/auth/components/RegisterView';
 import { ForgotPasswordView } from '@/features/auth/components/ForgotPasswordView';
 import { PlaceholderView } from '@/features/dashboard/components/PlaceholderView';
+import { ProtectedRoute } from '@/components/guards/ProtectedRoute';
+import { GuestRoute } from '@/components/guards/GuestRoute';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <AppLayout />,
+    element: <ProtectedRoute />,
     children: [
       {
-        index: true,
-        element: <HomeView />,
-      },
-      {
-        path: 'wellness',
-        element: <PlaceholderView />,
-      },
-      {
-        path: 'community',
-        element: <PlaceholderView />,
-      },
-      {
-        path: 'events',
-        element: <PlaceholderView />,
-      },
-      {
-        path: 'resources',
-        element: <PlaceholderView />,
-      },
-      {
-        path: 'ai-assistant',
-        element: <PlaceholderView />,
-      },
-      {
-        path: 'settings',
-        element: <PlaceholderView />,
-      },
-      {
-        path: '*',
-        element: <NotFoundView />,
+        path: '',
+        element: <AppLayout />,
+        children: [
+          {
+            index: true,
+            element: <HomeView />,
+          },
+          {
+            path: 'wellness',
+            element: <PlaceholderView />,
+          },
+          {
+            path: 'community',
+            element: <PlaceholderView />,
+          },
+          {
+            path: 'events',
+            element: <PlaceholderView />,
+          },
+          {
+            path: 'resources',
+            element: <PlaceholderView />,
+          },
+          {
+            path: 'ai-assistant',
+            element: <PlaceholderView />,
+          },
+          {
+            path: 'settings',
+            element: <PlaceholderView />,
+          },
+          {
+            path: '*',
+            element: <NotFoundView />,
+          },
+        ],
       },
     ],
   },
   {
     path: '/auth',
-    element: <AuthLayout />,
+    element: <GuestRoute />,
     children: [
       {
-        path: 'login',
-        element: <LoginView />,
-      },
-      {
-        path: 'register',
-        element: <RegisterView />,
-      },
-      {
-        path: 'forgot-password',
-        element: <ForgotPasswordView />,
+        path: '',
+        element: <AuthLayout />,
+        children: [
+          {
+            path: 'login',
+            element: <LoginView />,
+          },
+          {
+            path: 'register',
+            element: <RegisterView />,
+          },
+          {
+            path: 'forgot-password',
+            element: <ForgotPasswordView />,
+          },
+        ],
       },
     ],
   },
